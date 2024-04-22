@@ -6,7 +6,6 @@ provider "aws" {
 # AWS CodeCommit Repository
 data "aws_codecommit_repository" "app_voting_repo" {
   repository_name = "app-voting-codecommit-repository"  # Change to your desired repo name
-  description     = "Repository for App Voting project."
 }
 
 # Create an S3 bucket to store pipeline artifacts
