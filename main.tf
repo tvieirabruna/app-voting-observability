@@ -9,125 +9,58 @@ resource "aws_codecommit_repository" "app_voting_repo" {
   description     = "Repository for App Voting project."
 }
 
-# Create an S3 bucket to store pipeline artifacts
-resource "aws_s3_bucket" "pipeline_artifacts" {
-  bucket = "app-voting-pipeline-artifacts"  # Change to a unique name
+# Create an S3 bucket
+resource "aws_s3_bucket" "s3_report_bucket" {
+  bucket = "app-voting-report-bucket"  # Ensure this is unique
 }
 
-# Create IAM role for CodePipeline
-resource "aws_iam_role" "codepipeline_role" {
-  name = "codepipeline-role"
+# Create IAM role for EC2 with S3 permissions
+resource "aws_iam_role" "ec2_s3_role" {
+  name = "ec2-s3-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
       Effect    = "Allow",
       Principal = {
-        Service = "codepipeline.amazonaws.com",
+        Service = "ec2.amazonaws.com"
       },
-      Action = "sts:AssumeRole",
+      Action = "sts:AssumeRole"
     }],
   })
 }
 
-resource "aws_iam_role_policy_attachment" "codepipeline_policy" {
-  role       = aws_iam_role.codepipeline_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSCodePipeline_FullAccess"
+# Attach S3 read/write policy to the IAM role
+resource "aws_iam_role_policy_attachment" "ec2_s3_policy_attachment" {
+  role       = aws_iam_role.ec2_s3_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"  # Full access; tailor as needed
 }
 
-# Create IAM role for CodeBuild with Terraform permissions
-resource "aws_iam_role" "codebuild_role" {
-  name = "codebuild-role"
+# Create an EC2 instance
+resource "aws_instance" "docker_instance" {
+  ami           = "ami-04e5276ebb8451442"  # Change to a valid AMI ID
+  instance_type = "t2.micro"  # Change instance type if needed
+  iam_instance_profile = aws_iam_role.ec2_s3_role.name
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect    = "Allow",
-      Principal = {
-        Service = "codebuild.amazonaws.com",
-      },
-      Action = "sts:AssumeRole",
-    }],
-  })
+  # Optional: Security group allowing SSH and HTTP
+  security_groups = ["default"]  # Use a specific security group if needed
+
+  # Optional: User-data script to access the S3 bucket
+  user_data = <<-EOF
+    #!/bin/bash
+    sudo apt-get update
+    sudo apt-get install -y awscli
+    # Test access to S3 bucket
+    aws s3 ls s3://${aws_s3_bucket.s3_report_bucket.bucket}
+  EOF
 }
 
-# Define a CodeBuild project to run Terraform commands
-resource "aws_codebuild_project" "terraform_build" {
-  name         = "app-voting-terraform-build"
-  service_role = aws_iam_role.codebuild_role.arn
-
-  artifacts {
-    type = "CODEPIPELINE"  # No output artifacts from CodeBuild
-  }
-
-  environment {
-    compute_type = "BUILD_GENERAL1_SMALL"
-    image        = "aws/codebuild/standard:6.0"
-    type         = "LINUX_CONTAINER"
-  }
-
-  source {
-    type      = "CODEPIPELINE"
-    buildspec = <<-EOT
-      version: 0.2
-      phases:
-        install:
-          commands:
-            - terraform init
-        build:
-          commands:
-            - terraform plan -out=plan.tfplan
-        post_build:
-          commands:
-            - terraform apply -auto-approve plan.tfplan
-      artifacts:
-        files: []
-    EOT
-  }
+# Output the public IP of the EC2 instance
+output "ec2_public_ip" {
+  value = aws_instance.docker_instance.public_ip
 }
 
-# Define CodePipeline
-resource "aws_codepipeline" "terraform_pipeline" {
-  name     = "app-voting-terraform-pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
-
-  artifact_store {
-    type     = "S3"
-    location = aws_s3_bucket.pipeline_artifacts.bucket
-  }
-
-  stage {
-    name = "Source"
-
-    action {
-      name             = "CodeCommit_Source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "CodeCommit"
-      version          = "1"
-      output_artifacts = ["source_output"]
-
-      configuration = {
-        RepositoryName = aws_codecommit_repository.app_voting_repo.repository_name  # Add this line
-        BranchName     = "main"  # Use your desired branch
-      }
-    }
-  }
-
-  stage {
-    name = "Build"
-
-    action {
-      name             = "CodeBuild_Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = ["source_output"]
-      version          = "1"
-
-      configuration = {
-        ProjectName = aws_codebuild_project.terraform_build.name
-      }
-    }
-  }
+# Output the S3 bucket name
+output "s3_bucket_name" {
+  value = aws_s3_bucket.s3_report_bucket.bucket
 }
