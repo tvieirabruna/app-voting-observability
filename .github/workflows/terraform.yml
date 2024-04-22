@@ -1,0 +1,39 @@
+# .github/workflows/terraform.yml
+name: Terraform Workflow
+
+on:
+  push:
+    branches:
+      - main  # Change this to your branch
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Checkout your GitHub repository
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2  # Set up Terraform
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS credentials
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS credentials
+          AWS_DEFAULT_REGION: "us-east-1"  # Change to your region
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'  # Only apply on the main branch
+        run: terraform apply -auto-approve  # Use -auto-approve to bypass prompt for approval
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
