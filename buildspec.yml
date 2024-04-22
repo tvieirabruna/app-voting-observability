@@ -1,0 +1,13 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - terraform init  # Initialize Terraform
+  build:
+    commands:
+      - terraform plan -out=tfplan  # Create a plan and save to tfplan
+  post_build:
+    commands:
+      - terraform apply -auto-approve tfplan  # Apply the plan
+artifacts:
+  files: []
