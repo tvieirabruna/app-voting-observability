@@ -15,10 +15,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3  # Checkout your GitHub repository
+        uses: actions/checkout@v4  # Checkout your GitHub repository
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2  # Set up Terraform
+        uses: hashicorp/setup-terraform@v3  # Set up Terraform
 
       - name: Initialize Terraform
         run: terraform init
