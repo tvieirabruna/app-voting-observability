@@ -5,7 +5,7 @@ provider "aws" {
 
 # AWS CodeCommit Repository
 resource "aws_codecommit_repository" "app_voting_repo" {
-  repository_name = "app-voting-codecommit-repository"  # Change to your desired repo name
+  repository_name = "app-voting-codecommit-repository"
   description     = "Repository for App Voting project."
 }
 
@@ -30,27 +30,32 @@ resource "aws_iam_role" "ec2_s3_role" {
   })
 }
 
+# Create an IAM Instance Profile and attach the role
+resource "aws_iam_instance_profile" "ec2_s3_instance_profile" {
+  name = "ec2-s3-instance-profile"
+  role = aws_iam_role.ec2_s3_role.name  # Associate the role with the instance profile
+}
+
 # Attach S3 read/write policy to the IAM role
 resource "aws_iam_role_policy_attachment" "ec2_s3_policy_attachment" {
   role       = aws_iam_role.ec2_s3_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"  # Full access; tailor as needed
 }
 
-# Create an EC2 instance
+# Create an EC2 instance and use the correct instance profile
 resource "aws_instance" "docker_instance" {
   ami           = "ami-04e5276ebb8451442"  # Change to a valid AMI ID
-  instance_type = "t2.micro"  # Change instance type if needed
-  iam_instance_profile = aws_iam_role.ec2_s3_role.name
+  instance_type = "t2.micro"  # Adjust as needed
+  iam_instance_profile = aws_iam_instance_profile.ec2_s3_instance_profile.name
 
   # Optional: Security group allowing SSH and HTTP
-  security_groups = ["default"]  # Use a specific security group if needed
+  security_groups = ["default"]  # Adjust as needed
 
-  # Optional: User-data script to access the S3 bucket
+  # User-data script to install AWS CLI and test S3 access
   user_data = <<-EOF
     #!/bin/bash
     sudo apt-get update
     sudo apt-get install -y awscli
-    # Test access to S3 bucket
     aws s3 ls s3://${aws_s3_bucket.s3_report_bucket.bucket}
   EOF
 }
