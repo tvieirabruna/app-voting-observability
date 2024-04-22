@@ -6,7 +6,7 @@ provider "aws" {
 # AWS CodeCommit Repository
 resource "aws_codecommit_repository" "app_voting_repo" {
   repository_name = "app-voting-codecommit-repository"
-  description     = "Repository for App Voting project."
+  description     = "Repository for App Voting project"
 }
 
 # Create an S3 bucket
