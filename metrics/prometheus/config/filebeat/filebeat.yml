@@ -6,15 +6,13 @@ filebeat.inputs:
   enabled: true
   paths:
     - /var/log/*.log
-  json:
-    keys_under_root: true
-    add_error_key: true
-    message_key: message
-    overwrite_keys: true
 
-cloud.id: ""
-cloud.auth: ""
+cloud.id: "brunavieira:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvOjQ0MyRiYzY3M2RmNDJhNTg0NmNmOWVkZGFmM2QwNmMzZmNkMCQ5ZWNjMDQyYzQ2NDc0OTEzOTk3N2Y1NmQ2OTc4ZDEyZg=="
+cloud.auth: "elastic:t3sSEvd0w9s3V13gPNcHb43s"
+
+output.elasticsearch:
+  pipeline: "pipeline-adatech"
 
 logging.level: debug
 logging.json: true
-logging.selectors: ["*"] 
+logging.selectors: ["*"]

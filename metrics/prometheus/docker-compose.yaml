@@ -210,9 +210,9 @@ services:
     container_name: filebear
     user: root
     volumes:
-      - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - ./logs/:/var/log/
-    command: filebeat -e -strict.perms=true
+    command: filebeat -e -strict.perms=false
     networks:
       - monitoring
       
