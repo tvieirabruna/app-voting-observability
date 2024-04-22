@@ -28,7 +28,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS credentials
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS credentials
-          AWS_DEFAULT_REGION: "us-west-2"  # Change to your region
+          AWS_DEFAULT_REGION: "us-east-1"  # Change to your region
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'  # Only apply on the main branch
