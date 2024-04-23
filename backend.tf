@@ -1,5 +1,3 @@
-# backend.tf
-
 # Configure Terraform to use an S3 backend
 terraform {
   backend "s3" {

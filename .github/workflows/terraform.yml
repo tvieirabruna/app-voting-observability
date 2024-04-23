@@ -17,6 +17,13 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4  # Checkout your GitHub repository
 
+      - name: Setup AWS Credentials  # Add this step before Terraform commands
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # AWS Access Key
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # AWS Secret Key
+          aws-region: "us-east-1"  # Set your AWS region
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3  # Set up Terraform
 
