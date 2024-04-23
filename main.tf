@@ -86,9 +86,4 @@ resource "aws_instance" "docker_instance" {
     cd /home/ubuntu
     git clone https://github.com/tvieirabruna/app-voting-observability.git 
   EOF
-
-  # Output the public IP address for SSH access
-  output "ec2_public_ip" {
-    value = aws_instance.docker_instance.public_ip
-  }
 } 
