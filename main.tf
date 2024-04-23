@@ -62,10 +62,6 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
-variable "ec2_ssh_public_key" {
-  description = "Public key for SSH access"
-}
-
 # Create a key pair in Terraform
 resource "aws_key_pair" "app_voting_key_pair" {
   key_name   = "app-voting-ec2-ssh"
