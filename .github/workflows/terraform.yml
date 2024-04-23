@@ -42,11 +42,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Write Public Key to Specific Path
+      - name: Generate SSH Key Pair
         run: |
-          mkdir -p ~/.ssh  # Ensure the directory exists
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/app-voting-ec2-ssh.pub  # Write the public key to a file
-
+          ssh-keygen -t rsa -b 2048 -f ~/.ssh/app-voting-ec2-ssh -N ''  # Generate key without passphrase
 
       - name: Initialize Terraform
         run: terraform init
