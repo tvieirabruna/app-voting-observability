@@ -42,6 +42,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Write Public Key to Specific Path
+        run: echo "${{ secrets.EC2_SSH_KEY }}" > /home/runner/work/_temp/app-voting-ec2-ssh.pub  # Write the public key to a specified location
+
       - name: Initialize Terraform
         run: terraform init
 

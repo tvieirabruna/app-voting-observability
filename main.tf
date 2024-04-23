@@ -62,6 +62,12 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
+# Create a key pair in Terraform
+resource "aws_key_pair" "app_voting_key_pair" {
+  key_name   = "app-voting-ec2-ssh"
+  public_key = file(var.EC2_SSH_KEY_FILE_ADDRESS)  # Public key file
+}
+
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
   ami           = "ami-04e5276ebb8451442"  # Ubuntu 20.04 LTS; change if needed
