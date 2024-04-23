@@ -1,6 +1,20 @@
+# Configure Terraform to use an S3 backend
+terraform {
+  backend "s3" {
+    bucket = "app-voting-terraform-state-bucket"  # Unique S3 bucket for state storage
+    key    = "app-voting/terraform.tfstate"  # Path to store the state in the bucket
+    region = "us-east-1"  # AWS region where the S3 bucket is located
+  }
+}
+
 # Define AWS provider and region
 provider "aws" {
   region = "us-east-1"  # Change to your preferred region
+}
+
+# Create an S3 bucket to store Terraform state
+resource "aws_s3_bucket" "terraform_state_bucket" {
+  bucket = "app-voting-terraform-state-bucket"
 }
 
 # AWS CodeCommit Repository
@@ -47,6 +61,11 @@ resource "aws_instance" "docker_instance" {
   ami           = "ami-04e5276ebb8451442"  # Change to a valid AMI ID
   instance_type = "t2.micro"  # Adjust as needed
   iam_instance_profile = aws_iam_instance_profile.ec2_s3_instance_profile.name
+
+  # Give the instance a name using tags
+  tags = {
+    Name = "app_voting_ec2" 
+  }
 
   # Optional: Security group allowing SSH and HTTP
   security_groups = ["default"]  # Adjust as needed
