@@ -3,11 +3,6 @@ provider "aws" {
   region = "us-east-1"  # Change to your preferred region
 }
 
-# Create an S3 bucket to store Terraform state
-resource "aws_s3_bucket" "terraform_state_bucket" {
-  bucket = "app-voting-terraform-state-bucket"
-}
-
 # AWS CodeCommit Repository
 resource "aws_codecommit_repository" "app_voting_repo" {
   repository_name = "app-voting-codecommit-repository"
