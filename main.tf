@@ -42,35 +42,53 @@ resource "aws_iam_role_policy_attachment" "ec2_s3_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess" 
 }
 
-# Create an EC2 instance and use the correct instance profile
+# Security group allowing SSH
+resource "aws_security_group" "ssh_access" {
+  name        = "ssh-access"
+  description = "Allow SSH and HTTP access"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Be careful with this. Consider limiting it to your IP or a range.
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
-  ami           = "ami-04e5276ebb8451442"  # Change to a valid AMI ID
+  ami           = "ami-04e5276ebb8451442"  # Ubuntu 20.04 LTS; change if needed
   instance_type = "t2.micro"  # Adjust as needed
-  iam_instance_profile = aws_iam_instance_profile.ec2_s3_instance_profile.name
+  key_name      = "app-voting-ec2-ssh"  # Your SSH key pair
+  security_groups = [aws_security_group.ssh_access.name]  # Security group setup
 
   # Give the instance a name using tags
   tags = {
     Name = "app_voting_ec2" 
   }
 
-  # Optional: Security group allowing SSH and HTTP
-  security_groups = ["default"]  # Adjust as needed
-
-  # User-data script to install AWS CLI and test S3 access
   user_data = <<-EOF
     #!/bin/bash
     sudo apt-get update
-    sudo apt-get install -y awscli
-    aws s3 ls s3://${aws_s3_bucket.s3_report_bucket.bucket}
+    sudo apt-get install -y docker.io
+    sudo systemctl start docker
+    sudo systemctl enable docker
+
+    # Clone the GitHub repository
+    sudo apt-get install -y git
+    cd /home/ubuntu
+    git clone https://github.com/tvieirabruna/app-voting-observability.git 
   EOF
-}
 
-# Output the public IP of the EC2 instance
-output "ec2_public_ip" {
-  value = aws_instance.docker_instance.public_ip
-}
-
-# Output the S3 bucket name
-output "s3_bucket_name" {
-  value = aws_s3_bucket.s3_report_bucket.bucket
-}
+  # Output the public IP address for SSH access
+  output "ec2_public_ip" {
+    value = aws_instance.docker_instance.public_ip
+  }
+} 
