@@ -11,7 +11,7 @@ resource "aws_codecommit_repository" "app_voting_repo" {
 
 # Create an S3 bucket
 resource "aws_s3_bucket" "s3_report_bucket" {
-  bucket = "app-voting-report-bucket"  # Ensure this is unique
+  bucket = "app-voting-report-bucket" 
 }
 
 # Create IAM role for EC2 with S3 permissions
