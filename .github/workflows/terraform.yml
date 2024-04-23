@@ -42,10 +42,6 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Generate SSH Key Pair
-        run: |
-          ssh-keygen -t rsa -b 2048 -f ~/.ssh/app-voting-ec2-ssh -N ''  # Generate key without passphrase
-
       - name: Initialize Terraform
         run: terraform init
 
