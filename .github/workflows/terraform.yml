@@ -54,7 +54,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "us-east-1"
-          PUBLIC_KEY: ssh_key.pub  # File with public key
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
