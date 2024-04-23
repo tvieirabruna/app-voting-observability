@@ -34,10 +34,6 @@ resource "aws_iam_role" "ec2_s3_role" {
 resource "aws_iam_instance_profile" "ec2_s3_instance_profile" {
   name = "ec2-s3-instance-profile"
   role = aws_iam_role.ec2_s3_role.name  # Associate the role with the instance profile
-
-  lifecycle {
-    ignore_changes = [name]  # Prevent Terraform from recreating if the name already exists
-  }
 }
 
 # Attach S3 read/write policy to the IAM role
