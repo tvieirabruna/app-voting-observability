@@ -21,7 +21,7 @@ jobs:
 
       - name: Create S3 Bucket
         run: |
-          aws s3api create-bucket --bucket app-voting-terraform-state-bucket --region us-east-1 --create-bucket-configuration
+          aws s3api create-bucket --bucket app-voting-terraform-state-bucket --region us-east-1
           aws s3api put-bucket-versioning --bucket app-voting-terraform-state-bucket --versioning-configuration Status=Enabled
           aws s3api put-bucket-encryption --bucket app-voting-terraform-state-bucket --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 
