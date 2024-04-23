@@ -43,7 +43,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
 
       - name: Write SSH Public Key to File
-        run: echo "${{ secrets.EC2_SSH_KEY }}" > ssh_key.pub  # Write secret to a file
+        run: echo "${{ secrets.EC2_SSH_PUBLIC_KEY }}" > ssh_key.pub  # Write secret to a file
+
+      - name: Write SSH Private Key to File
+        run: |
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem  # Important to set permissions
 
       - name: Initialize Terraform
         run: terraform init
