@@ -104,5 +104,5 @@ resource "aws_instance" "docker_instance" {
 } 
 
 output "public_key" {
-  value     = aws_key_pair.app_voting_key_pair.public_key
+  value     = aws_key_pair.key_pair.public_key
 }
