@@ -64,7 +64,7 @@ resource "aws_security_group" "ssh_access" {
 
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
-  ami           = "ami-04e5276ebb8451442"  # Ubuntu 20.04 LTS; change if needed
+  ami           = "ami-080e1f13689e07408"  # Ubuntu 20.04 LTS; change if needed
   instance_type = "t2.micro"  # Adjust as needed
   key_name      = "app-voting-pair-key"  # Your SSH key pair in AWS
   security_groups = [aws_security_group.ssh_access.name]  # Security group setup
@@ -74,16 +74,5 @@ resource "aws_instance" "docker_instance" {
     Name = "app_voting_ec2" 
   }
 
-  user_data = <<-EOF
-    #!/bin/bash
-    sudo apt-get update
-    sudo apt-get install -y docker.io
-    sudo systemctl start docker
-    sudo systemctl enable docker
-
-    # Clone the GitHub repository
-    sudo apt-get install -y git
-    cd /home/ubuntu
-    git clone https://github.com/tvieirabruna/app-voting-observability.git 
-  EOF
+  user_data = "${file("docker_github_script.sh")}"
 }
