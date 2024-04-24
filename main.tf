@@ -95,5 +95,5 @@ resource "aws_instance" "docker_instance" {
 } 
 
 output "public_key" {
-  value     = tls_private_key.pk.public_key_openssh
+  value     = aws_key_pair.app_voting_key_pair.public_key
 }
