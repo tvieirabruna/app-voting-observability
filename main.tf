@@ -62,17 +62,11 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
-# Create a key pair in Terraform
-resource "aws_key_pair" "key_pair" {
-  key_name   = "app-voting-pair-key"       
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC/l30rJNmZF+Qdyw1u3l2xGriqpI8KVa43GwbOrjrv4HgNt9buUIBhTaQcqoq1QlTA/c/Furx31m0+ZuFPG03KPBR+Et2GDQZx9528zj+XQ7tYTw/ffbHqmkFgdA5EJMyZYfvmy9NlQMRUUjC8R0GN/3rKVWR/kPdsCz7oWvmhBWGDcIlkMeo/0lVoEdRCiTfEOcYPi1gN16Tv3mG5ERkzTWqy7/QJzBWx2I884Pe4hKDPLhuoIsxd+JM6GhY2bLA+g3PExfLy0jynxnB8ZVGNclvLZHw7M84YZeegI3T5N7iFcV3aYCCbl7Suoa34fntAChIq2Jtqj9keeDdMdCLxwQP+Awg9pyKYe2bpzS63gFT7IGqXFA5syX76Ou2F2mnGCBgXeXEL6RdlVnDakia/3IfQ/GfNFbLz8URFyt7aXAlnNtIih5tIONYkJcCZQUixeemzhx5GT/jsZ8mRF2U86ULzYhXkRgDv+GzbsysWv6DVcHWIH4Y4qI/0rVmUpA/AUZVBtLURDqHALkn3Vcy2SUxInbVHmMYmd0tFtpXXzJdcIL+CjMbAqfD9LbUeBu+OU+FCIzjFcLzEtvp0qOGrFYSJm4NxVaGb0OOfd4OuoO73CebXJN4vG1SxxptSZ+ZM+Mmb3nFDog6T8QsYSGBHqQBnrGfnYOdGYe78nSrMzw== bruna@Calcifer"
-}
-
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
   ami           = "ami-04e5276ebb8451442"  # Ubuntu 20.04 LTS; change if needed
   instance_type = "t2.micro"  # Adjust as needed
-  key_name      = aws_key_pair.key_pair.key_name  # Your SSH key pair
+  key_name      = "app-voting-pair-key"  # Your SSH key pair
   security_groups = [aws_security_group.ssh_access.name]  # Security group setup
 
   # Give the instance a name using tags
