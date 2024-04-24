@@ -43,22 +43,36 @@ resource "aws_iam_role_policy_attachment" "ec2_s3_policy_attachment" {
 }
 
 # Security group allowing SSH
-resource "aws_security_group" "ssh_access" {
-  name        = "ssh-access"
-  description = "Allow SSH and HTTP access"
+resource "aws_security_group" "web_access" {
+  name        = "web-access"
+  description = "Allow SSH, HTTP, and HTTPS access"
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Be careful with this. Consider limiting it to your IP or a range.
+    cidr_blocks = ["0.0.0.0/0"]  # Allow SSH from anywhere
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow HTTP from anywhere
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow HTTPS from anywhere
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]  # Allow all outbound traffic
   }
 }
 
