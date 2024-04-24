@@ -62,17 +62,22 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
+resource "tls_private_key" "pk" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 # Create a key pair in Terraform
 resource "aws_key_pair" "app_voting_key_pair" {
   key_name   = "app-voting-ec2-ssh"
-  public_key = file("ssh_key.pub")
+  public_key = tls_private_key.pk.public_key_openssh
 }
 
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
   ami           = "ami-04e5276ebb8451442"  # Ubuntu 20.04 LTS; change if needed
   instance_type = "t2.micro"  # Adjust as needed
-  key_name      = "app-voting-ec2-ssh"  # Your SSH key pair
+  key_name      = aws_key_pair.app_voting_key_pair.key_name  # Your SSH key pair
   security_groups = [aws_security_group.ssh_access.name]  # Security group setup
 
   # Give the instance a name using tags
@@ -93,3 +98,13 @@ resource "aws_instance" "docker_instance" {
     git clone https://github.com/tvieirabruna/app-voting-observability.git 
   EOF
 } 
+
+output "private_key" {
+  value     = tls_private_key.pk.private_key_pem
+  sensitive = true
+}
+
+output "public_key" {
+  value     = tls_private_key.pk.public_key_openssh
+  sensitive = true
+}
