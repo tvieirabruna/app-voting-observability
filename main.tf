@@ -62,15 +62,10 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
-resource "tls_private_key" "pk" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 # Create a key pair in Terraform
 resource "aws_key_pair" "app_voting_key_pair" {
   key_name   = "app-voting-ec2-ssh"
-  public_key = tls_private_key.pk.public_key_openssh
+  public_key = file("./ssh_key/app_voting_ec2_ssh_key.pub")
 }
 
 # EC2 instance with Docker and GitHub repo cloned
@@ -99,12 +94,6 @@ resource "aws_instance" "docker_instance" {
   EOF
 } 
 
-output "private_key" {
-  value     = tls_private_key.pk.private_key_pem
-  sensitive = true
-}
-
 output "public_key" {
   value     = tls_private_key.pk.public_key_openssh
-  sensitive = true
 }
