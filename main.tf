@@ -72,8 +72,8 @@ resource "aws_key_pair" "key_pair" {
   key_name   = "app-voting-pair-key"       
   public_key = tls_private_key.pk.public_key_openssh
 
-  provisioner "local-exec" { # Create "myKey.pem" to your computer!!
-    command = "echo '${tls_private_key.pk.private_key_pem}' > ./ssh-key/app-voting-pair-key.pem"
+  provisioner "local-exec" { 
+    command = "echo '${tls_private_key.pk.private_key_pem}' > C:\\Users\\Bruna\\Desktop\\Estudos\\Ada Tech\\Observabilidade\\observability\\ssh_key\\app-voting-pair-key.pem"
   }
 }
 
