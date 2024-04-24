@@ -65,7 +65,7 @@ resource "aws_security_group" "ssh_access" {
 # Create a key pair in Terraform
 resource "aws_key_pair" "app_voting_key_pair" {
   key_name   = "app-voting-ec2-ssh"
-  public_key = file(".\ssh_key\app-voting-ec2-ssh-key.pub")
+  public_key = file("./ssh_key/app-voting-ec2-ssh-key.pub")
 }
 
 # EC2 instance with Docker and GitHub repo cloned
