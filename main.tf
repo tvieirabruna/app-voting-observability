@@ -70,11 +70,7 @@ resource "tls_private_key" "pk" {
 # Create a key pair in Terraform
 resource "aws_key_pair" "key_pair" {
   key_name   = "app-voting-pair-key"       
-  public_key = tls_private_key.pk.public_key_openssh
-
-  provisioner "local-exec" { 
-    command = "echo '${tls_private_key.pk.private_key_pem}' > C:\\Users\\Bruna\\Desktop\\Estudos\\Ada Tech\\Observabilidade\\observability\\ssh_key\\app-voting-pair-key.pem"
-  }
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDFILiJewkKGG/sxMPzs9Cd0EHqJhhKnNb80iBQp6nuQB4VqgvScBiJcvMpuyl2ii7+b8VEjlOW+i+COrbAqUpQkXsiQLgCUNhiUGCvzXha6cCdxFB091/ZNI2YmEaYdHyeAoj73/ntuw5IQRCnalaHkb5gJnvDeEGJZTgdYoF+/hcX4oQAwvOIMXdc0rl0OyirNzux9Zb1jCT5mTF8q/iXlS1mDHK2lVoobqLC4qK8wrCV8m+R7G1MmyzlkHv0M7cWzu1hEGZ2riNTNIZlqgoodch6Xc2jjmQ4vfRvdhO9mIUzQH2+iBKReNEqQwxBZ1z7lRMAIwZRhJXNdUtLw8FCHdhQHkR5Tmt6PJZZ5qwQz0GINHRwesjc478pc2StKp1bsOKM7/zxyssIP+wdZgqqTI0bvxB4rSuAkxKkRfcM56JrskBOTjKybFTgJWJXaTfMEMLBIG9i7p44TV+AlVRuaAtA4auZIF/W9FUn172BUiVn0JvoFQMfxhr0/pfH6M83BgmA8sZBJVJ4DejXSKNnZqE+zwXviqOKBbGFfsKWlYX72vK7z71cciVta3wyHeGLsKouAD7iFNFt7JmZog6ZxmiiVQqLNfwBURYGrzoVLNf86j+aKQ6O5TwTcaKQh7laeaM0Tx7dTN+14LERzMtj9dFJGryFMh1dAPduar+jew== bruna@Calcifer"
 }
 
 # EC2 instance with Docker and GitHub repo cloned
@@ -101,8 +97,4 @@ resource "aws_instance" "docker_instance" {
     cd /home/ubuntu
     git clone https://github.com/tvieirabruna/app-voting-observability.git 
   EOF
-} 
-
-output "public_key" {
-  value     = aws_key_pair.key_pair.public_key
 }
