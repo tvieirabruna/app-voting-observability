@@ -81,7 +81,7 @@ resource "aws_instance" "docker_instance" {
   ami           = "ami-080e1f13689e07408"  # Ubuntu 20.04 LTS; change if needed
   instance_type = "t2.micro"  # Adjust as needed
   key_name      = "app-voting-pair-key"  # Your SSH key pair in AWS
-  security_groups = [aws_security_group.ssh_access.name]  # Security group setup
+  security_groups = [aws_security_group.web_access.name]  # Security group setup
 
   # Give the instance a name using tags
   tags = {
