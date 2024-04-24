@@ -1,9 +1,11 @@
 #!/bin/bash
 sudo apt-get update
 sudo apt-get install -y docker.io
-sudo snap install docker
 sudo systemctl start docker
 sudo systemctl enable docker
+
+# Install docker-compose
+sudo snap install docker
 
 # Clone the GitHub repository
 sudo apt-get install -y git
