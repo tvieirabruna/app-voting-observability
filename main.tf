@@ -62,11 +62,6 @@ resource "aws_security_group" "ssh_access" {
   }
 }
 
-resource "tls_private_key" "pk" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 # Create a key pair in Terraform
 resource "aws_key_pair" "key_pair" {
   key_name   = "app-voting-pair-key"       
