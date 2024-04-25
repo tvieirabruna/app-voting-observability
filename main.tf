@@ -1,6 +1,6 @@
 # Define AWS provider and region
 provider "aws" {
-  region = "us-east-1"  # Change to your preferred region
+  region = "us-east-1" 
 }
 
 # AWS CodeCommit Repository
@@ -68,6 +68,27 @@ resource "aws_security_group" "web_access" {
     cidr_blocks = ["0.0.0.0/0"]  # Allow HTTPS from anywhere
   }
 
+  ingress {
+    from_port   = 3010
+    to_port     = 3010
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] 
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -78,9 +99,9 @@ resource "aws_security_group" "web_access" {
 
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
-  ami           = "ami-080e1f13689e07408"  # Ubuntu 20.04 LTS; change if needed
-  instance_type = "t2.micro"  # Adjust as needed
-  key_name      = "app-voting-pair-key"  # Your SSH key pair in AWS
+  ami           = "ami-080e1f13689e07408" 
+  instance_type = "t2.micro" 
+  key_name      = "app-voting-pair-key"  # SSH key pair already created in AWS
   security_groups = [aws_security_group.web_access.name]  # Security group setup
 
   # Give the instance a name using tags
