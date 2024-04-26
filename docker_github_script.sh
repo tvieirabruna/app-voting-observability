@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo apt upgrade
 sudo apt-get update
 
 # Install Docker in Ubuntu
