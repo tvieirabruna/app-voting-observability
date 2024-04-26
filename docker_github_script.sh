@@ -19,7 +19,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 # Install Docker Compose
-sudo apt-get install docker-compose-plugin -y
+sudo apt-get install docker-compose-plugin
 
 # Upgrade and update packages
 sudo apt-get upgrade
@@ -34,4 +34,4 @@ git clone https://github.com/tvieirabruna/app-voting-observability.git
 cd app-voting-observability/metrics/prometheus
 
 # Run Docker
-sudo docker-compose up -d
+sudo docker compose up -d

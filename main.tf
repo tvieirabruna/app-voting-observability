@@ -100,7 +100,7 @@ resource "aws_security_group" "web_access" {
 # EC2 instance with Docker and GitHub repo cloned
 resource "aws_instance" "docker_instance" {
   ami           = "ami-080e1f13689e07408" 
-  instance_type = "t2.micro" 
+  instance_type = "t3.medium" 
   key_name      = "app-voting-pair-key"  # SSH key pair already created in AWS
   security_groups = [aws_security_group.web_access.name]  # Security group setup
 
